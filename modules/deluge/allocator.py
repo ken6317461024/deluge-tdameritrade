@@ -8,6 +8,7 @@ returns # of shares to purchase
 import os
 import sys
 import json
+import math
 import tdameritrade as _td
 
 # consistent logging
@@ -58,6 +59,11 @@ class Allocator:
         allocation = []
         for s in symbols:
             q = quotes[s['s'].upper()]
+            print("\n")
             print(f"{q['symbol']}: last: {q['lastPrice']}  ( bid: {q['bidPrice']} ask: {q['askPrice']}, spread: {(q['askPrice'] - q['bidPrice']):.2f} )")
-
+            dollars = total * s['p']
+            shares_fractional = (dollars / q['lastPrice'])
+            shares = math.ceil(shares_fractional)
+            amount_to_purchase = shares * q['lastPrice']
+            print(f"total: {total}, percent: {s['p']*100}% dollars: {dollars:.2f} shares: {shares}, amount: {amount_to_purchase},  shares raw: {shares_fractional:.2f} ")
 
