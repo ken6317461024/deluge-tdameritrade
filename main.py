@@ -33,18 +33,22 @@ td.connect()
 # q =td.getQuote('aapl,tsla')
 # print(json.dumps(q, indent=2))
 
-a = Allocator(tdAmeritrade=td)
-print(a)
+# a = Allocator(tdAmeritrade=td)
+# print(a)
 
-symbols = [
-    {"s": "aapl", "p":.5},
-    {"s": "tsla", "p": .4},
-    {"s": "vigi", "p": .1}
-]
+# symbols = [
+#     {"s": "aapl", "p":.5},
+#     {"s": "tsla", "p": .4},
+#     {"s": "vigi", "p": .1}
+# ]
+# allocation = a.calculate(symbols, 1000.45)
+# print(json.dumps(allocation, indent=2))
 
-allocation = a.calculate(symbols, 1000.45)
 
-print(json.dumps(allocation, indent=2))
+from deluge.strategies.strategyCore import StrategyCore
+
+sc = StrategyCore()
+
 
 
 # import os
