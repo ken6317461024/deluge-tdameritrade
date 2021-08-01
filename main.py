@@ -42,7 +42,10 @@ symbols = [
     {"s": "vigi", "p": .1}
 ]
 
-a.calculate(symbols, 1000.45)
+allocation = a.calculate(symbols, 1000.45)
+
+print(json.dumps(allocation, indent=2))
+
 
 # import os
 # import tdameritrade as td

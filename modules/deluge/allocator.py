@@ -66,4 +66,14 @@ class Allocator:
             shares = math.ceil(shares_fractional)
             amount_to_purchase = shares * q['lastPrice']
             print(f"total: {total}, percent: {s['p']*100}% dollars: {dollars:.2f} shares: {shares}, amount: {amount_to_purchase},  shares raw: {shares_fractional:.2f} ")
+            allocation.append({
+                "s": s['s'].upper(),
+                "p": s['p'],
+                "shares": shares,
+                "amount": amount_to_purchase,
+                "shares_fractional": shares_fractional,
+                "price": q['lastPrice'],
+                "dollars": dollars
+            })
 
+        return allocation
