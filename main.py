@@ -24,6 +24,7 @@ sys.path.insert(0, os.path.join(PROJECT_ROOT, 'modules'))
 
 from tdameritrade_deluge import TDAmeritradeDeluge
 from deluge.allocator import Allocator
+from deluge.strategies.strategyCore import StrategyCore
 
 
 td = TDAmeritradeDeluge()
@@ -34,21 +35,22 @@ td.connect()
 # print(json.dumps(q, indent=2))
 
 # a = Allocator(tdAmeritrade=td)
-# print(a)
+# # print(a)
 
 # symbols = [
-#     {"s": "aapl", "p":.5},
-#     {"s": "tsla", "p": .4},
-#     {"s": "vigi", "p": .1}
+#     {"s": "aapl", "p":.5, "a": "buy"},
+#     {"s": "tsla", "p": .4, "a": "buy"},
+#     {"s": "vigi", "p": .1, "a": "buy"}
 # ]
 # allocation = a.calculate(symbols, 1000.45)
 # print(json.dumps(allocation, indent=2))
 
 
-from deluge.strategies.strategyCore import StrategyCore
 
-sc = StrategyCore()
 
+sc = StrategyCore(tdAmeritrade=td)
+allocation = sc.allocate(15000)
+print(json.dumps(allocation, indent=2))
 
 
 # import os
