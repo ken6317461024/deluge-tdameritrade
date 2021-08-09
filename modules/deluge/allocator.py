@@ -9,6 +9,7 @@ import os
 import sys
 import json
 import math
+from decimal import *
 import tdameritrade as _td
 
 # consistent logging
@@ -17,6 +18,9 @@ log_level = "DEBUG"
 FORMAT = "%(asctime)s %(levelname)s | %(filename)s:%(lineno)s %(funcName)s | %(message)s"
 logging.basicConfig(format=FORMAT, level=logging.getLevelName(log_level))
 log = logging.getLogger(__name__)
+
+#Decimal precision
+getcontext().prec = 4
 
 
 class Allocator:
@@ -40,18 +44,19 @@ class Allocator:
         log.debug(f"Allocator.calculate() total: {total}")
         
         symbol_string = ""
-        percent_total = 0
+        percent_total = Decimal(0)
 
         # iterate to build quotes, sanity check
         for s in symbols:
             symbol_string += f"{s['s']},"
-            percent_total += s['p']
+            percent_total += Decimal(s['p'])
+
             if percent_total > 1:
-                sys.exit("EXIT: allocation is over 100%")
+                sys.exit(f"EXIT: allocation is over 100%: {percent_total}")
 
         # trim trailing comma (aapl,tsla,)
         symbol_string = symbol_string[0:-1]
-        print(symbol_string)
+        log.debug(f"looking up: {symbol_string}")
 
         quotes = self._td.getQuote(symbol_string)
         # print(json.dumps(quotes, indent=2))
@@ -62,13 +67,14 @@ class Allocator:
         meta_dollars_to_buy = 0
         meta_dollars_to_sell = 0
 
+
         allocation = []
         for s in symbols:
             q = quotes[s['s'].upper()]
-            print("\n")
-            print(f"{q['symbol']}: last: {q['lastPrice']}  ( bid: {q['bidPrice']} ask: {q['askPrice']}, spread: {(q['askPrice'] - q['bidPrice']):.2f} )")
-            dollars = total * s['p']
-            shares_fractional = (dollars / q['lastPrice'])
+            # print("\n")
+            # print(f"{q['symbol']}: last: {q['lastPrice']}  ( bid: {q['bidPrice']} ask: {q['askPrice']}, spread: {(q['askPrice'] - q['bidPrice']):.2f} )")
+            dollars = Decimal(total * s['p'])
+            shares_fractional = dollars / Decimal(q['lastPrice'])
             # shares = math.ceil(shares_fractional)
             shares = round(shares_fractional)
             amount_to_purchase = shares * q['lastPrice']
@@ -81,7 +87,7 @@ class Allocator:
                 meta_dollars_to_sell += dollars
             
 
-            print(f"total: {total}, percent: {s['p']*100}% dollars: {dollars:.2f} shares: {shares}, amount: {amount_to_purchase},  shares raw: {shares_fractional:.2f} ")
+            # print(f"total: {total}, percent: {s['p']*100}% dollars: {dollars:.2f} shares: {shares}, amount: {amount_to_purchase},  shares raw: {shares_fractional:.2f} ")
             allocation.append({
                 s['s'].upper(): {
                     "percent": s['p'],
@@ -98,8 +104,9 @@ class Allocator:
             "ALLOCATION_TOTALS":{
                 "shares_to_buy": meta_shares_to_buy,
                 "shares_to_sell": meta_shares_to_sell,
-                "dollars_to_buy": meta_dollars_to_buy,
-                "dollars_to_sell": meta_dollars_to_sell
+                "dollars_to_buy": float(meta_dollars_to_buy),
+                "dollars_to_sell": float(meta_dollars_to_sell),
+                "percentage_total": percent_total
             }
         })
 

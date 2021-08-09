@@ -62,7 +62,7 @@ class StrategyCore(Strategy):
             {"s": "PALL", "p": .025, "a": "buy"},
             {"s": "CPER", "p": .025, "a": "buy"},
             {"s": "JJN", "p": .025, "a": "buy"},
-            {"s": "IAU", "p": .025, "a": "sell"},
+            {"s": "IAU", "p": .04, "a": "buy"},
         ]
         allocation = self._allocator.calculate(symbols, total)
         return allocation

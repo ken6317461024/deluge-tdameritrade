@@ -6,7 +6,7 @@ https://tdameritrade.readthedocs.io/en/latest/index.html#docs
 '''
 import os
 import sys
-import json
+import simplejson as json
 import logging
 
 
