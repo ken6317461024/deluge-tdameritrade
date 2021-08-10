@@ -13,6 +13,8 @@ https://github.com/alexgolec/tda-api (202 stars)
 
 https://github.com/areed1192/python-trading-robot  (298 stars)
 
+[TDAmeritrade Schemas](https://github.com/blais/ameritrade-api-schemas)
+
 
 # TD Ameritrade docs
 

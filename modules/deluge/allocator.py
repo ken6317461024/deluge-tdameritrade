@@ -71,7 +71,6 @@ class Allocator:
         allocation = []
         for s in symbols:
             q = quotes[s['s'].upper()]
-            # print("\n")
             # print(f"{q['symbol']}: last: {q['lastPrice']}  ( bid: {q['bidPrice']} ask: {q['askPrice']}, spread: {(q['askPrice'] - q['bidPrice']):.2f} )")
             dollars = Decimal(total * s['p'])
             shares_fractional = dollars / Decimal(q['lastPrice'])
@@ -85,8 +84,16 @@ class Allocator:
             if s['a'] == 'sell':   
                 meta_shares_to_sell += shares
                 meta_dollars_to_sell += dollars
-            
 
+        
+            # profit and stop-loss calculations
+            last_price = Decimal(q['lastPrice'])
+            trailing_stop_percent = Decimal(.05)
+            stop_price = last_price - (last_price * trailing_stop_percent)
+            profit_target_percent = Decimal(.1)
+            profit_target = last_price+ (last_price * profit_target_percent)
+
+        
             # print(f"total: {total}, percent: {s['p']*100}% dollars: {dollars:.2f} shares: {shares}, amount: {amount_to_purchase},  shares raw: {shares_fractional:.2f} ")
             allocation.append({
                 s['s'].upper(): {
@@ -96,11 +103,16 @@ class Allocator:
                     "amount": amount_to_purchase,
                     "shares_fractional": shares_fractional,
                     "price": q['lastPrice'],
-                    "dollars": dollars
+                    "dollars": dollars,
+                    "stop_price": stop_price,
+                    "profit_target": profit_target
                     }
             })
 
-        allocation.append({
+        allocation_obj = {}
+        allocation_obj['allocation'] = allocation
+
+        allocation_obj['meta'] = {
             "ALLOCATION_TOTALS":{
                 "shares_to_buy": meta_shares_to_buy,
                 "shares_to_sell": meta_shares_to_sell,
@@ -108,6 +120,6 @@ class Allocator:
                 "dollars_to_sell": float(meta_dollars_to_sell),
                 "percentage_total": percent_total
             }
-        })
+        }
 
-        return allocation
+        return allocation_obj
