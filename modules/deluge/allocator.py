@@ -80,10 +80,10 @@ class Allocator:
 
             if s['a'] == 'buy':
                 meta_shares_to_buy += shares
-                meta_dollars_to_buy += dollars
+                meta_dollars_to_buy += Decimal(amount_to_purchase)
             if s['a'] == 'sell':   
                 meta_shares_to_sell += shares
-                meta_dollars_to_sell += dollars
+                meta_dollars_to_sell += Decimal(amount_to_purchase)
 
         
             # profit and stop-loss calculations
@@ -96,10 +96,11 @@ class Allocator:
         
             # print(f"total: {total}, percent: {s['p']*100}% dollars: {dollars:.2f} shares: {shares}, amount: {amount_to_purchase},  shares raw: {shares_fractional:.2f} ")
             allocation.append({
-                s['s'].upper(): {
+                "order": {
+                    "symbol": s['s'].upper(),
                     "percent": s['p'],
                     "action": s['a'],
-                    "shares": shares,
+                    "qty": shares,
                     "amount": amount_to_purchase,
                     "shares_fractional": shares_fractional,
                     "price": q['lastPrice'],

@@ -23,56 +23,36 @@ sys.path.insert(0, os.path.join(PROJECT_ROOT, 'modules'))
 
 
 from tdameritrade_deluge import TDAmeritradeDeluge
-from deluge.allocator import Allocator
+# from deluge.allocator import Allocator
 from deluge.strategies.strategyCore import StrategyCore
+from deluge.strategies.strategySimple import StrategySimple
 
 
 td = TDAmeritradeDeluge()
 td.connect()
+
+# accounts = td.getAccounts()
+# print(json.dumps(accounts, indent=2))
+# primary_account = list(accounts.keys())[0]
+
+print(f"PRIMARY ACCOUNT ID: {td.getPrimaryAccountId()}")
+
+
+
 # print(td.getTransactions())
 
-# q =td.getQuote('aapl,tsla')
-# print(json.dumps(q, indent=2))
-
-# a = Allocator(tdAmeritrade=td)
-# # print(a)
-
-# symbols = [
-#     {"s": "aapl", "p":.5, "a": "buy"},
-#     {"s": "tsla", "p": .4, "a": "buy"},
-#     {"s": "vigi", "p": .1, "a": "buy"}
-# ]
-# allocation = a.calculate(symbols, 1000.45)
-# print(json.dumps(allocation, indent=2))
 
 
 
 
-sc = StrategyCore(tdAmeritrade=td)
-allocation = sc.allocate(15000)
+sc = StrategySimple(tdAmeritrade=td)
+allocation = sc.allocate(100)
 print(json.dumps(allocation, indent=2))
 
-
-# import os
-# import tdameritrade as td
-
-# client_id = os.getenv('TDAMERITRADE_CONSUMER_KEY')
-# account_id = os.getenv('TDAMERITRADE_ACCOUNT')
-# refresh_token = os.getenv('TDAMERITRADE_REFRESH_TOKEN')
-
-# c = td.TDClient(client_id=client_id, refresh_token=refresh_token, account_ids=[account_id])
+sc.transact(allocation)
 
 
-# # see all transactions in account
-# print(c.transactions(type='ALL'))
-# # or
-# transactions = c.transactionsDF(type='ALL')
-# transactions.iloc[0,0]
 
-
-# # Fundamentals for a company
-# aapl = c.fundamentalSearchDF('AAPL')
-# print(aapl['fundamental'][0])
 
 
 # # is market open?
