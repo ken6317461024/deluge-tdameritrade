@@ -358,8 +358,9 @@ class TDAmeritradeDeluge:
             #     ],
             # }
             order = {
-                "orderType": "MARKET",
+                "orderType": "LIMIT",
                 "session": "NORMAL",
+                "price": f"{o['price']}",
                 "duration": "GOOD_TILL_CANCEL",
                 "orderStrategyType": "SINGLE",
                 "orderLegCollection": [
@@ -377,7 +378,9 @@ class TDAmeritradeDeluge:
 
             try:
                 self._c.session.headers = {"Content-Type": "application/json"}
-                result = self._c.placeOrder(accountId=primary_account_id, order=order)
+                # result = self._c.placeOrder(accountId=primary_account_id, order=order)
+                # result = self._c.placeOrder(accountId=primary_account_id, json=order)
+                result = self._c.placeOrder(accountId=primary_account_id, order=json.dumps(order))
                 results.append(result)
                 log.info("ORDER RESULT:")
                 log.info(json.dumps(result, indent=2))
