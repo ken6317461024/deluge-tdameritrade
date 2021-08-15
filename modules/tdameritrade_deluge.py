@@ -327,50 +327,51 @@ class TDAmeritradeDeluge:
             log.debug(a)
             o = a["order"]
 
-            # order = {
-            #     "orderType": "LIMIT",
-            #     "session": "NORMAL",
-            #     "price": f"{o['price']}",
-            #     "duration": "GOOD_TILL_CANCEL",
-            #     "orderStrategyType": "TRIGGER",
-            #     "orderLegCollection": [
-            #         {
-            #             "instruction": f"{o['action'].upper()}",
-            #             "quantity": f"{o['qty']}",
-            #             "instrument": {"symbol": f"{o['symbol']}", "assetType": "EQUITY"},
-            #         }
-            #     ],
-            #     "childOrderStrategies": [
-            #         {
-            #             "orderType": "LIMIT",
-            #             "session": "NORMAL",
-            #             "price": f"{o['stop_price']}",
-            #             "duration": "GOOD_TILL_CANCEL",
-            #             "orderStrategyType": "SINGLE",
-            #             "orderLegCollection": [
-            #                 {
-            #                     "instruction": "SELL",
-            #                     "quantity": f"{o['qty']}",
-            #                     "instrument": {"symbol": f"{o['symbol']}", "assetType": "EQUITY"},
-            #                 }
-            #             ],
-            #         }
-            #     ],
-            # }
             order = {
                 "orderType": "LIMIT",
                 "session": "NORMAL",
                 "price": f"{o['price']}",
                 "duration": "GOOD_TILL_CANCEL",
-                "orderStrategyType": "SINGLE",
+                "orderStrategyType": "TRIGGER",
                 "orderLegCollection": [
                     {
-                        "instruction": "Buy",
-                        "quantity": o['qty'],
+                        "instruction": f"{o['action'].upper()}",
+                        "quantity": f"{o['qty']}",
                         "instrument": {"symbol": f"{o['symbol']}", "assetType": "EQUITY"},
                     }
                 ],
+                "childOrderStrategies": [
+                    {
+                        "orderType": "STOP_LIMIT",
+                        "session": "NORMAL",
+                        "stopPrice": f"{o['stop_price']}",
+                        "price": f"{o['stop_price']}",
+                        "duration": "GOOD_TILL_CANCEL",
+                        "orderStrategyType": "SINGLE",
+                        "orderLegCollection": [
+                            {
+                                "instruction": "SELL",
+                                "quantity": f"{o['qty']}",
+                                "instrument": {"symbol": f"{o['symbol']}", "assetType": "EQUITY"},
+                            }
+                        ],
+                    }
+                ],
             }
+            # order = {
+            #     "orderType": "LIMIT",
+            #     "session": "NORMAL",
+            #     "price": f"{o['price']}",
+            #     "duration": "GOOD_TILL_CANCEL",
+            #     "orderStrategyType": "SINGLE",
+            #     "orderLegCollection": [
+            #         {
+            #             "instruction": "Buy",
+            #             "quantity": o['qty'],
+            #             "instrument": {"symbol": f"{o['symbol']}", "assetType": "EQUITY"},
+            #         }
+            #     ],
+            # }
 
             print("*" * 10)
             log.debug(json.dumps(order, indent=2))
